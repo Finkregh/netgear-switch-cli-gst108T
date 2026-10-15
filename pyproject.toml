@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "netgear-gs108t"
+version = "0.2"
+description = "Netgear GS108Tv1 and GS108Tv2 management CLI"
+readme = "README.md"
+requires-python = ">=3.13"
+authors = [
+    { name = "Philip Peshin", email = "phil.peshin@gmail.com" },
+    { name = "Oluf Lorenzen", email = "ol+githubnetgearswitchcli@oluflorenzen.de"},
+]
+license = { text = "GPL-3.0-or-later" }
+dependencies = ["requests"]
+
+[project.scripts]
+netgear = "netgear.netgear:main"

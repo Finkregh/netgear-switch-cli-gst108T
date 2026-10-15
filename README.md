@@ -4,16 +4,56 @@ netgear
 Netgear GS108T management utilities
 
 Netgear GS108T is an inexpensive managed switch with VLAN support, but unfortunately you can only manage it thru Web GUI.
-So I decided to create a command line utility to manage VLANs. 
+So I decided to create a command line utility to manage VLANs.
+
+Supported firmware
+------------------
+
+The GS108T shipped with two completely different web interfaces and this tool
+speaks both.  The firmware family is detected automatically; use
+``--firmware v1`` or ``--firmware v2`` to skip detection.
+
+```text
+===========  ==========================  ==========================================
+Family       Firmware                    Web interface
+===========  ==========================  ==========================================
+``v1``       3.0.x                       ``/login.cgi``, ``/vlanConfiguration.html``
+``v2``       5.x                         ``/base/main_login.html``, ``/switching/dot1q/*``
+===========  ==========================  ==========================================
+```
+
+The ``v1`` firmware has no "admit all / vlan only" PVID mode, so the mode
+argument of ``vlan pvid`` is ignored there.
+
+Sessions
+--------
+
+The switch allows only a handful of simultaneous web logins, has no logout
+endpoint and keeps idle sessions around for minutes, so logging in on every
+invocation fills its session table.  The session cookie is therefore cached
+under ``$XDG_STATE_HOME/netgear-gs108t`` (``~/.local/state`` by default) and
+reused while it still works.  When the cached session is gone the tool logs in
+again, and if every slot is taken it waits for one to expire before failing.
+
+Because a valid cached session is reused, a wrong password is only reported
+when the tool actually has to log in.
 
 How to use
 ----------
 
+Direct start via e.g. `uvx`
+
+```shell
+uvx --from git+https://github.com/Finkregh/netgear-switch-cli-gst108T.git netgear
+``````
+
 INSTALLATION
 ------------
 ```
-sudo python setup.py install
+uv sync
 ```
+
+(or ``pip install -e .``)
 
 PREPARE ENVIRONMENT
 -------------------
@@ -96,5 +136,3 @@ $ netgear vlan pvid 5,6,7 200 vlan
 
 (c) Philip Peshin, phil.peshin@gmail.com
 October 12, 2014
-
-
